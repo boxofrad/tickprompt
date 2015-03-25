@@ -81,7 +81,7 @@ func getEnvStr(key string) (string, error) {
 	val := os.Getenv(key)
 
 	if val == "" {
-		err = fmt.Errorf("missing env var: `%s`", key)
+		err = fmt.Errorf("missing env var `%s`", key)
 	}
 
 	return val, err

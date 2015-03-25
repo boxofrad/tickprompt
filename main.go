@@ -2,21 +2,15 @@ package main
 
 import (
 	"fmt"
-	"log"
+	"os"
 )
 
 func main() {
 	config, err := loadConfig()
-
-	if err != nil {
-		log.Fatal(err)
-	}
+	handleErr(err)
 
 	entries, err := getEntries(config)
-
-	if err != nil {
-		log.Fatal(err)
-	}
+	handleErr(err)
 
 	fmt.Printf("%v / %v", sumHours(entries), config.ExpectedDailyHours)
 }
@@ -29,4 +23,11 @@ func sumHours(entries []Entry) float32 {
 	}
 
 	return total
+}
+
+func handleErr(err error) {
+	if err != nil {
+		fmt.Printf("ERROR: %v", err)
+		os.Exit(1)
+	}
 }
