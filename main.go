@@ -6,28 +6,30 @@ import (
 )
 
 func main() {
-	config, err := loadConfig()
-	handleErr(err)
+	args := os.Args[1:]
 
-	entries, err := getEntries(config)
-	handleErr(err)
-
-	fmt.Printf("%v / %v", sumHours(entries), config.ExpectedDailyHours)
-}
-
-func sumHours(entries []Entry) float32 {
-	var total float32
-
-	for _, entry := range entries {
-		total += entry.Hours
+	if len(args) < 1 {
+		usage()
 	}
 
-	return total
+	if args[0] == "update" {
+		update()
+	}
+
+	if args[0] == "show" {
+		show()
+	}
 }
 
 func handleErr(err error) {
 	if err != nil {
 		fmt.Printf("ERROR: %v", err)
+		os.Exit(1)
+	}
+}
+
+func silentHandleErr(err error) {
+	if err != nil {
 		os.Exit(1)
 	}
 }

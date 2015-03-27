@@ -15,7 +15,7 @@ type Entry struct {
 	Hours float32 `json:"hours"`
 }
 
-func getEntries(config *Config) ([]Entry, error) {
+func GetEntries(config *Config) ([]Entry, error) {
 	today := time.Now()
 	tommorow := today.Add(24 * time.Hour)
 

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"time"
 )
 
 const (
@@ -12,9 +13,11 @@ const (
 	API_TOKEN            = "TICKPROMPT_API_TOKEN"
 	USER_ID              = "TICKPROMPT_USER_ID"
 	EXPECTED_DAILY_HOURS = "TICKPROMPT_EXPECTED_DAILY_HOURS"
+	CACHE_TTL            = "TICKPROMPT_CACHE_TTL"
 
 	// Defaults
 	DEFAULT_EXPECTED_DAILY_HOURS = 7.5
+	DEFAULT_CACHE_TTL            = 900
 )
 
 type Config struct {
@@ -22,9 +25,10 @@ type Config struct {
 	ApiToken           string
 	UserId             int
 	ExpectedDailyHours float32
+	CacheTTL           time.Duration
 }
 
-func loadConfig() (*Config, error) {
+func LoadConfig() (*Config, error) {
 	subscriptionId, err := getEnvInt(SUBSCRIPTION_ID)
 
 	if err != nil {
@@ -57,11 +61,18 @@ func loadConfig() (*Config, error) {
 		}
 	}
 
+	cacheTTL, err := getEnvInt(CACHE_TTL)
+
+	if err != nil {
+		cacheTTL = DEFAULT_CACHE_TTL
+	}
+
 	return &Config{
 		SubscriptionId:     subscriptionId,
 		ApiToken:           apiToken,
 		UserId:             userId,
 		ExpectedDailyHours: float32(expectedDailyHours),
+		CacheTTL:           time.Duration(cacheTTL) * time.Second,
 	}, nil
 }
 
