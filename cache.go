@@ -3,10 +3,10 @@ package main
 import (
 	"encoding/json"
 	"io/ioutil"
-	"os/user"
-	"path"
 	"time"
 )
+
+const CACHE_FILE = ".tickprompt"
 
 type Cache struct {
 	Hours    float32   `json:"hours"`
@@ -21,7 +21,7 @@ func NewCache(hours float32) *Cache {
 }
 
 func ReadCacheFromFile() (*Cache, error) {
-	path, err := cacheFilePath()
+	path, err := FilePath(CACHE_FILE)
 
 	if err != nil {
 		return nil, err
@@ -40,7 +40,7 @@ func ReadCacheFromFile() (*Cache, error) {
 }
 
 func (c *Cache) WriteToFile() error {
-	path, err := cacheFilePath()
+	path, err := FilePath(CACHE_FILE)
 
 	if err != nil {
 		return err
@@ -57,14 +57,4 @@ func (c *Cache) WriteToFile() error {
 
 func (c *Cache) HasExpired(ttl time.Duration) bool {
 	return c.CachedAt.Add(ttl).Before(time.Now())
-}
-
-func cacheFilePath() (string, error) {
-	user, err := user.Current()
-
-	if err != nil {
-		return "", err
-	}
-
-	return path.Join(user.HomeDir, ".tickprompt"), nil
 }

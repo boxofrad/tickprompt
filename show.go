@@ -22,7 +22,9 @@ func show() {
 }
 
 func updateInBackground() {
-	bin, err := osext.Executable()
-	silentHandleErr(err)
-	exec.Command(bin, "update").Start()
+	if !updateInProgress() {
+		bin, err := osext.Executable()
+		silentHandleErr(err)
+		exec.Command(bin, "update").Start()
+	}
 }
