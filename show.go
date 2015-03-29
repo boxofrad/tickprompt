@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"os/exec"
 
 	"github.com/kardianos/osext"
@@ -12,13 +13,20 @@ func show() {
 	silentHandleErr(err)
 
 	cache, err := ReadCacheFromFile()
-	silentHandleErr(err)
 
-	if cache.HasExpired(config.CacheTTL) {
-		updateInBackground()
+	if err == nil {
+		if cache.HasExpired(config.CacheTTL) {
+			updateInBackground()
+		}
+
+		fmt.Print(cache.Hours)
+	} else {
+		if os.IsNotExist(err) {
+			updateInBackground()
+		} else {
+			silentHandleErr(err)
+		}
 	}
-
-	fmt.Print(cache.Hours)
 }
 
 func updateInBackground() {
